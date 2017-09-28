@@ -24,7 +24,9 @@ li{
 .input-lable{
     margin-bottom: 20px;
 }
-
+.distance-between-forms{
+    margin-bottom: 10px
+}
 .create-account{
     font-size: 12px;
     font-weight: 400;

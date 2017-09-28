@@ -9,20 +9,20 @@ from django.contrib.auth import login, logout
 
 
 def home(request):
-    form = SubscriberForm(request.POST or None)
-    user = Subscriber()
-    if request.method == "POST" and form.is_valid():
-        # print(form)
-        print(request.POST)
-        print(form.cleaned_data)
-        data = form.cleaned_data
-        print(data['name'])
-        print(user.name)
-        if data['name'] == user:
-            print("this name user is exist")
-            # new_form = form.save()
-        # print(data['email'])
-
+    # form = SubscriberForm(request.POST or None)
+    # user = Subscriber()
+    # if request.method == "POST" and form.is_valid():
+    #     # print(form)
+    #     print(request.POST)
+    #     print(form.cleaned_data)
+    #     data = form.cleaned_data
+    #     print(data['name'])
+    #     print(user.name)
+    #     if data['name'] == user:
+    #         print("this name user is exist")
+    #         # new_form = form.save()
+    #     # print(data['email'])
+    # return render('home.html')
     return render(request, 'home.html', locals())
 
 

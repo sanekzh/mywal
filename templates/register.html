@@ -2,9 +2,17 @@
 {% load static %}
 
 {% block content %}
-    <form action="" method="post">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <button type="submit">Зарегистрироваться</button>
+    <form class="form-signin" action="" method="post"> {% csrf_token %}
+{#        {{ form.as_p }}#}
+         <div class="input-lable">
+            <h3 class="form-signin-heading">Create New Account</h3>
+        </div>
+        <input class="form-control distance-between-forms" placeholder="Username" type="text" name="{{ form.username.name }}" autofocus required id="id_username" maxlength="254" />
+        <input class="form-control distance-between-forms" placeholder="Password" type="password" name="{{ form.password1.name }}" autofocus required id="id_password1" />
+        <input class="form-control" placeholder="Confirm Password" type="password" name="{{ form.password2.name }}" autofocus required id="id_password2" />
+        <div>
+            <button type="submit" class="btn btn-primary btn-lg">Sing Up</button>
+        </div>
+        <a class="create-account" href="/">Exit</a>
     </form>
 {% endblock %}

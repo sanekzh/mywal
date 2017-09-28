@@ -2,36 +2,13 @@
 {% load static %}
 
 {% block content %}
-    <div class="container valiform">
-        <div class="row">
-            <div class="col-lg-6 col-lg-offset-3">
-                <form class="form-horizontal" method="post" style="text-align: left"> {% csrf_token %}
-                    <h3>Log In To Your Account</h3>
-{#                    {{ form.as_p }}#}
-{#                    <div class="form-group">#}
-{#                        <div class="col-lg-4">#}
-{#                            <span class="form-error">{{ form.name.errors }}</span>#}
-{#                            <input type="text" placeholder="Username" name="{{ form.name.name }}" class="form-control"#}
-{#                                value="{{ request.POST.name }}"#}
-{#                            >#}
-{#                        </div>#}
-{#                    </div>#}
-{#                    <div class="form-group">#}
-{#                        <div class="col-lg-4">#}
-{#                            <span class="form-error">{{ form.pwd.errors }}</span>#}
-{#                            <input type="text" placeholder="Password" name="{{ form.pwd.name }}" class="form-control"#}
-{#                                value="{{ request.POST.pwd }}"#}
-{#                            >#}
-{#                        </div>#}
-{#                    </div>#}
-                    <div class="form-group">
-                        <button type="submit" class="btn btn-primary btn-lg">Sing In</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+        <form class="form-group">
 
+            <h3>Congratulation Your In Account</h3>
+            <a href="/logout" class="btn btn-primary">Log Out</a>
+        </form>
+
+{% endblock %}
 {#    <div class="general-container">#}
 {#        <div class="container top-container">#}
 {#            <div class="row">#}
@@ -60,4 +37,20 @@
 {#            </div>#}
 {#        </div>#}
 {#    </div>#}
-{% endblock %}
+    {#                    {{ form.as_p }}#}
+{#                    <div class="form-group">#}
+{#                        <div class="col-lg-4">#}
+{#                            <span class="form-error">{{ form.name.errors }}</span>#}
+{#                            <input type="text" placeholder="Username" name="{{ form.name.name }}" class="form-control"#}
+{#                                value="{{ request.POST.name }}"#}
+{#                            >#}
+{#                        </div>#}
+{#                    </div>#}
+{#                    <div class="form-group">#}
+{#                        <div class="col-lg-4">#}
+{#                            <span class="form-error">{{ form.pwd.errors }}</span>#}
+{#                            <input type="text" placeholder="Password" name="{{ form.pwd.name }}" class="form-control"#}
+{#                                value="{{ request.POST.pwd }}"#}
+{#                            >#}
+{#                        </div>#}
+{#                    </div>#}
