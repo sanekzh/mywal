@@ -31,6 +31,11 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # add to project templates for user
+    'django_adminlte',
+    # them for templates
+    'django_adminlte_theme',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

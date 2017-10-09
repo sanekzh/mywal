@@ -4,11 +4,11 @@
 {% block content %}
     <div class="form-signin">
         {% if user.is_authenticated %}
-            <h3 class="form-signin-heading">Hi, {{ user.username }}!</h3>
-            <a class="btn btn-primary btn-lg" href="/home">In Account</a>
-
-{#            {% include 'home.html' %}#}
-{#            {% url 'home' %}#}
+            <div>
+                <h3 class="form-signin-heading">Hello, {{ user.username }}!
+                    <a class="btn btn-primary btn-lg" href="/home">In Account</a>
+                </h3>
+            </div>
         {% else %}
             <a href="/login" class="btn btn-lg btn-primary btn-block">Log In</a>
             <br>

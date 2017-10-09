@@ -1,56 +1,53 @@
-{% extends 'base.html' %}
+{% extends 'adminlte/base.html' %}
 {% load static %}
 
-{% block content %}
-        <form class="form-group">
+{% block title %}Apps MyWal{% endblock %}
 
-            <h3>Congratulation Your In Account</h3>
-            <a href="/logout" class="btn btn-primary">Log Out</a>
-        </form>
+
+{% block content %}
+
+    <form id="upc_id" method="post" class="form-inline"> {% csrf_token %}
+        <div class="form-group">
+
+            <lable class="title"> {{ name }}035000521019</lable>
+            <lable class="title">UPC: </lable>
+            <input id="input_upc" name="input_upc" type="text" class="form-control" placeholder="for example: 035000521019" maxlength="64">
+        </div>
+        <div class="form-group">
+            <button id="upload" type="submit" class="btn btn-success">Upload</button>
+        </div>
+     <div>
+        <lable class="title"> {{ name }} </lable>
+
+    </div>
+    </form>
+
+
+
+    <script src="{% static 'js/jquery-3.2.1.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+
+
+
+    {#    <form id="upc_request" method="post" class="form-inline"> {% csrf_token %}#}
+{#        <div class="form-group">#}
+{#            <lable class="title">UPC: </lable>#}
+{#            <input id="upc" name="{{ form.upc.html_name }}" type="text" value="{{ request.POST.upc }}" class="form-control" placeholder="for example: 035000521019" maxlength="64">#}
+{#        </div>#}
+{#        <button id="upload" type="submit" class="btn btn-success">Upload</button>#}
+{#        {% if form.upc.errors %}#}
+{#            <div class="form-group alert alert-danger" style="padding: 7px;" role="alert">#}
+{#                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>#}
+{#                <span class="sr-only">Error:</span>#}
+{#                Enter a valid UPC#}
+{#            </div>#}
+{#        {% elif form.upc.errors == False %}#}
+{#              <lable class="title">{{ upc }}</lable>#}
+{##}
+{#        {% endif %}#}
+{#    </form>#}
+{#    <lable class="title">{{ name }}</lable>#}
 
 {% endblock %}
-{#    <div class="general-container">#}
-{#        <div class="container top-container">#}
-{#            <div class="row">#}
-{#                <div class="col-lg-8 col-lg-offset-2">#}
-{#                    <h3 class="title">Сайт в разработке!<br>#}
-{#                    Оставьте свои координаты, мы с вами свяжемся позже...</h3>#}
-{#                    <div>#}
-{#                        <form action="" method="post" class="form-inline text-center">#}
-{#                            <div class="form-group">#}
-{#                                <lable class="title">Ваше имя: </lable>#}
-{#                                <input type="text" name="{{ form.name.name }}" class="form-control">#}
-{#                            </div>#}
-{#                            <div class="form-group">#}
-{#                                <label class="title">Ваш email: </label>#}
-{#                                <input type="email" name="{{ form.email.name }}" class="form-control">#}
-{#                            </div>#}
-{##}
-{#                            <button type="submit" class="btn btn-primary btn-orange">Отправить</button>#}
-{##}
-{#                        </form>#}
-{#                    </div>#}
-{#                    <div class="footer">#}
-{#                        <h4 class="title"> {{ current_date }} <sup>&reg;</sup></h4>#}
-{#                    </div>#}
-{#                </div>#}
-{#            </div>#}
-{#        </div>#}
-{#    </div>#}
-    {#                    {{ form.as_p }}#}
-{#                    <div class="form-group">#}
-{#                        <div class="col-lg-4">#}
-{#                            <span class="form-error">{{ form.name.errors }}</span>#}
-{#                            <input type="text" placeholder="Username" name="{{ form.name.name }}" class="form-control"#}
-{#                                value="{{ request.POST.name }}"#}
-{#                            >#}
-{#                        </div>#}
-{#                    </div>#}
-{#                    <div class="form-group">#}
-{#                        <div class="col-lg-4">#}
-{#                            <span class="form-error">{{ form.pwd.errors }}</span>#}
-{#                            <input type="text" placeholder="Password" name="{{ form.pwd.name }}" class="form-control"#}
-{#                                value="{{ request.POST.pwd }}"#}
-{#                            >#}
-{#                        </div>#}
-{#                    </div>#}
+

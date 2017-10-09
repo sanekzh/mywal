@@ -7,3 +7,6 @@ class SubscriberForm(forms.ModelForm):
         model = Subscriber
         exclude = {""}
 
+
+class UPC(forms.Form):
+    upc = forms.CharField(max_length=64)

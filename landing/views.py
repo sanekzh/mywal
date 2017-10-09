@@ -1,28 +1,54 @@
 from django.shortcuts import render
-from .forms import SubscriberForm
-from .models import Subscriber
+from .forms import UPC
 from django.http import HttpResponseRedirect
 from django.views.generic.base import View
 from django.views.generic.edit import FormView
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout
+import requests
 
+
+# def home(request):
+#     # upc = None
+#     # if request.method == 'POST':
+#     #     upc = request.POST
+#     #     print(upc)
+#     #     upc_id = upc.get('input_upc')
+#     #     print('UPC = ', upc_id)
+#
+#     if request.method == "POST":
+#         # upc = request.POST.get('input_upc')
+#
+#         data = request.POST
+#         print('upc =', data['upc'])
+#
+#
+#         # text = data.
+#         # print('text =', text)
+#     return render(request, 'home.html', locals())
 
 def home(request):
-    # form = SubscriberForm(request.POST or None)
-    # user = Subscriber()
-    # if request.method == "POST" and form.is_valid():
-    #     # print(form)
-    #     print(request.POST)
-    #     print(form.cleaned_data)
-    #     data = form.cleaned_data
-    #     print(data['name'])
-    #     print(user.name)
-    #     if data['name'] == user:
-    #         print("this name user is exist")
-    #         # new_form = form.save()
-    #     # print(data['email'])
-    # return render('home.html')
+    name = ''
+    form = UPC(request.POST or None)
+    if request.POST and form.is_valid():
+        print('YES is_valid')
+        data = form.cleaned_data
+        print(data['upc'])
+        upc = data['upc']
+
+        r = requests.get('http://api.walmartlabs.com/v1/items',
+                         params={'apiKey': '5tkgtq74ffgptjd884pmuj8t', 'upc': upc})
+        if r.status_code == 200:
+            # print(r.json().get('items').pop().get('name'))
+            name = r.json().get('items').pop().get('name')
+        else:
+            print('Error! UPC not found')
+            name = 'Error! UPC not found'
+    else:
+        print("NO valid")
+
+    print(name)
+
     return render(request, 'home.html', locals())
 
 
