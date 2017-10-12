@@ -1,31 +1,15 @@
+import requests
 from django.shortcuts import render
-from .forms import UPC
 from django.http import HttpResponseRedirect
 from django.views.generic.base import View
 from django.views.generic.edit import FormView
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout
-import requests
+from .forms import UPC
 
 
-# def home(request):
-#     # upc = None
-#     # if request.method == 'POST':
-#     #     upc = request.POST
-#     #     print(upc)
-#     #     upc_id = upc.get('input_upc')
-#     #     print('UPC = ', upc_id)
-#
-#     if request.method == "POST":
-#         # upc = request.POST.get('input_upc')
-#
-#         data = request.POST
-#         print('upc =', data['upc'])
-#
-#
-#         # text = data.
-#         # print('text =', text)
-#     return render(request, 'home.html', locals())
+SUCCESS_RESPONSE = 200
+
 
 def home(request):
     name = ''
@@ -38,7 +22,7 @@ def home(request):
 
         r = requests.get('http://api.walmartlabs.com/v1/items',
                          params={'apiKey': '5tkgtq74ffgptjd884pmuj8t', 'upc': upc})
-        if r.status_code == 200:
+        if r.status_code == SUCCESS_RESPONSE:
             # print(r.json().get('items').pop().get('name'))
             name = r.json().get('items').pop().get('name')
         else:
@@ -75,6 +59,7 @@ class LoginFormView(FormView):
 
 
 class LogoutView(View):
+
     def get(self, request):
         logout(request)
         return HttpResponseRedirect("/")

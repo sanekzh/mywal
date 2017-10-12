@@ -5,7 +5,6 @@ from .models import *
 class SubscriberForm(forms.ModelForm):
     class Meta:
         model = Subscriber
-        exclude = {""}
 
 
 class UPC(forms.Form):
