@@ -1,7 +1,7 @@
 from django.conf.urls import url
-from landing import views
 from django.views.generic import TemplateView
 
+from landing import views
 
 urlpatterns = [
     url(r'^$', TemplateView.as_view(template_name='index.html')),
