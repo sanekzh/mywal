@@ -1,0 +1,47 @@
+{% extends 'adminlte/base.html' %}
+{% load static %}
+
+{% block title %}Apps MyWal{% endblock %}
+
+{% block nav_sidebar %}
+
+    <div class="main-sidebar">
+        <div class="sidebar">
+            <ul class="sidebar-menu">
+                <li class="header">{{ user.username }} - MENU</li>
+                <li><a href="{% url 'user_settings' %}"><span>Settings</span></a><</li>
+            </ul>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block content %}
+
+    <form class="form-signin" action="" method="post"> {% csrf_token %}
+        <div class="input-lable">
+            <h3 class="form-signin-heading">Your Settings</h3>
+        </div>
+{#        {{ form.as_p }}#}
+        <div class="general-container" style="margin-left: -15px">
+            <div class="container top-container">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <input class="form-control" style="margin-bottom: 5px" placeholder="Username" value="{{ user.username }}" type="text" name="{{ form.name.name }}" readonly />
+                            <input class="form-control" style="margin-bottom: 5px" placeholder="Email" type="email" name="{{ form.email.name }}" />
+                            <input class="form-control" placeholder="API-key" type="text" name="{{ form.user_apikey.name }}" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <button type="submit" class="btn btn-primary btn-sm">Save settings</button>
+        </div>
+        <div>
+            <a class="create-account" href="{% url 'home' %}">Exit</a>
+        </div>
+    </form>
+
+{% endblock %}

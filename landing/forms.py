@@ -6,7 +6,7 @@ from .models import *
 class SubscriberForm(forms.ModelForm):
     class Meta:
         model = Subscriber
-        exclude = [""]
+        fields = '__all__'
 
 
 class UPC(forms.Form):

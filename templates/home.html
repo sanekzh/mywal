@@ -3,6 +3,16 @@
 
 {% block title %}Apps MyWal{% endblock %}
 
+{% block nav_sidebar %}
+    <div class="main-sidebar">
+        <div class="sidebar">
+            <ul class="sidebar-menu">
+                <li class="header">{{ user.username }} - MENU</li>
+                <li><a href="{% url 'user_settings' %}"><span>Settings</span></a><</li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}
 
 {% block content %}
 
@@ -16,12 +26,11 @@
         <div class="form-group">
             <button id="upload" type="submit" class="btn btn-success">Upload</button>
         </div>
-     <div>
-        <lable class="title"> {{ name }} </lable>
-
-    </div>
+        <div>
+            <lable class="title"> {{ name }} </lable>
+        </div>
     </form>
-
+    <a href="{% url 'user_settings' %}">settings</a>
 
 
     <script src="{% static 'js/jquery-3.2.1.js' %}"></script>
