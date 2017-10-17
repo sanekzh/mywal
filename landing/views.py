@@ -8,13 +8,13 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout
 
 from .forms import UPC, SubscriberForm
+from .models import *
 
 
 SUCCESS_RESPONSE = 200
 
 
 def user_settings(request):
-    # email = ????????
     form = SubscriberForm(request.POST or None)
     if request.POST and form.is_valid():
         print('YES is_valid')
@@ -23,9 +23,12 @@ def user_settings(request):
         print(data["email"])
         print(data["user_apikey"])
         new_form = form.save()
-
     else:
         print("NO valid")
+    items = Subscriber.objects.all()
+    for item in items:
+        email = item.email
+        user_apikey = item.user_apikey
     return render(request, 'user_settings.html', locals())
 
 
