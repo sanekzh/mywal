@@ -1,7 +1,6 @@
 import requests
 
 from django.shortcuts import render
-from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.views.generic.base import View
 from django.views.generic.edit import FormView
@@ -15,6 +14,7 @@ SUCCESS_RESPONSE = 200
 
 
 def user_settings(request):
+    # email = ????????
     form = SubscriberForm(request.POST or None)
     if request.POST and form.is_valid():
         print('YES is_valid')
@@ -37,9 +37,11 @@ def home(request):
         data = form.cleaned_data
         print("UPC: ", data['upc'])
         upc = data['upc']
-
+        apikey = SubscriberForm.user_apikey
         r = requests.get('http://api.walmartlabs.com/v1/items',
-                         params={'apiKey': '5tkgtq74ffgptjd884pmuj8t', 'upc': upc})
+                         params={'apiKey': apikey, 'upc': upc})
+        # r = requests.get('http://api.walmartlabs.com/v1/items',
+        #                  params={'apiKey': '5tkgtq74ffgptjd884pmuj8t', 'upc': upc})
         if r.status_code == SUCCESS_RESPONSE:
             # print(r.json().get('items').pop().get('name'))
             item = r.json().get('items').pop().get('name')
