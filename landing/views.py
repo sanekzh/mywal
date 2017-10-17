@@ -48,8 +48,6 @@ def home(request):
         if r.status_code == SUCCESS_RESPONSE:
             # print(r.json().get('items').pop().get('name'))
             item = r.json().get('items').pop().get('name')
-
-
         else:
             print('Error! UPC not found')
             item = 'Error! UPC not found'
