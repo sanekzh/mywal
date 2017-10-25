@@ -1,7 +1,8 @@
 import requests
 
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpRequest
+from django.contrib.auth.models import User
 from django.views.generic.base import View
 from django.views.generic.edit import FormView
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
@@ -15,32 +16,46 @@ SUCCESS_RESPONSE = 200
 
 
 def user_settings(request):
+    session_key = request.session.session_key
+    user_data_settings = Subscriber.objects.filter(name=request.user.get_username())
+    for user_setting in user_data_settings:
+        email = user_setting.email
+        user_apikey = user_setting.user_apikey
+        context = {
+            'email': email,
+            'user_apikey': user_apikey
+        }
     form = SubscriberForm(request.POST or None)
     if request.POST and form.is_valid():
         print('YES is_valid')
         data = form.cleaned_data
         print(data["name"])
+        name = data['name']
         print(data["email"])
+        email = data['email']
         print(data["user_apikey"])
-        new_form = form.save()
+        user_apikey = data['user_apikey']
+        Subscriber.objects.update_or_create(name=name, defaults={'email': email, 'user_apikey': user_apikey})
+
     else:
         print("NO valid")
-    items = Subscriber.objects.all()
-    for item in items:
-        email = item.email
-        user_apikey = item.user_apikey
+
     return render(request, 'user_settings.html', locals())
 
 
 def home(request):
     item = ''
+    apikey = ''
     form = UPC(request.POST or None)
     if request.POST and form.is_valid():
         print('YES is_valid')
         data = form.cleaned_data
         print("UPC: ", data['upc'])
         upc = data['upc']
-        apikey = SubscriberForm.user_apikey
+        user_data_settings = Subscriber.objects.filter(name=request.user.get_username())
+        for user_setting in user_data_settings:
+            email = user_setting.email
+            apikey = user_setting.user_apikey
         r = requests.get('http://api.walmartlabs.com/v1/items',
                          params={'apiKey': apikey, 'upc': upc})
         # r = requests.get('http://api.walmartlabs.com/v1/items',
@@ -65,9 +80,6 @@ class RegisterFormView(FormView):
     template_name = "register.html"
 
     def form_valid(self, form):
-        # SubscriberForm.name = User.username
-        # SubscriberForm.email = ""
-        print("test1 = ", )
         form.save()
         return super(RegisterFormView, self).form_valid(form)
 
