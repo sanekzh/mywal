@@ -10,4 +10,5 @@ urlpatterns = [
     url(r'^logout/$', views.LogoutView.as_view()),
     url(r'^home/$', views.home, name='home'),
     url(r'^user_settings/$', views.user_settings, name='user_settings'),
+    url(r'^get_context_data/$', views.get_context_data, name='get_context_data'),
 ]

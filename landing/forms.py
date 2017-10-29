@@ -11,3 +11,9 @@ class SubscriberForm(forms.ModelForm):
 
 class UPC(forms.Form):
     upc = forms.CharField(max_length=64)
+
+
+class Products(forms.ModelForm):
+    class Meta:
+        model = Products
+        fields = '__all__'

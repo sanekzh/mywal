@@ -13,9 +13,11 @@ from .models import *
 
 
 SUCCESS_RESPONSE = 200
+ITEM = ''
 
 
 def user_settings(request):
+    context = []
     session_key = request.session.session_key
     user_data_settings = Subscriber.objects.filter(name=request.user.get_username())
     for user_setting in user_data_settings:
@@ -29,14 +31,14 @@ def user_settings(request):
     if request.POST and form.is_valid():
         print('YES is_valid')
         data = form.cleaned_data
-        print(data["name"])
+        print(data['name'])
         name = data['name']
-        print(data["email"])
+        print(data['email'])
         email = data['email']
-        print(data["user_apikey"])
+        print(data['user_apikey'])
         user_apikey = data['user_apikey']
         Subscriber.objects.update_or_create(name=name, defaults={'email': email, 'user_apikey': user_apikey})
-
+        user_data_settings = Subscriber.objects.filter(name=request.user.get_username())
     else:
         print("NO valid")
 
@@ -62,17 +64,28 @@ def home(request):
         #                  params={'apiKey': '5tkgtq74ffgptjd884pmuj8t', 'upc': upc})
         if r.status_code == SUCCESS_RESPONSE:
             # print(r.json().get('items').pop().get('name'))
-            item = r.json().get('items').pop().get('name')
+            item = str(r.json().get('items').pop().get('name'))
+            global ITEM
+            ITEM = item
         else:
             print('Error! UPC not found')
             item = 'Error! UPC not found'
     else:
         print("NO valid")
 
-    print(item)
+    print("Product name: ", item)
+    context = {
+        'item': item,
+    }
+    return render(request, 'home.html', context)
 
-    return render(request, 'home.html', locals())
 
+def get_context_data(request):
+
+    context = {
+        'item': ITEM,
+    }
+    return render(request, 'home.html', context)
 
 class RegisterFormView(FormView):
     form_class = UserCreationForm
