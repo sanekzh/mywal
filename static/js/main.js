@@ -1,28 +1,6 @@
-// $(document).ready(function () {
-//     var form = $('#upc_id');
-//     console.log(form);
-//     form.click('submit', function (event) {
-//         event.preventDefault();
-//         console.log('123');
-//         var upc_id = $('#input_upc').val();
-//         console.log(upc_id);
-//     });
-//
-//
-// });
-//
-// jQuery(document).ready(function () {
-//     var form = $('#upc_id');
-//     console.log('jQuery working!');
-//     form.on('submit', function (event) {
-//         event.preventDefault();
-//         console.log('123');
-//
-//
-//     });
-//
-// });
 jQuery(document).ready(function ($) {
+    init();
+
     $('#upc_id').submit(function(event){
         event.preventDefault();
         // var data = $(this).serialize();
@@ -38,11 +16,6 @@ jQuery(document).ready(function ($) {
             url: "/home/",
             dataType:"html",
             data: data,
-            // data: {
-            //     // data1: data1,
-            //     "param": '123',
-            //     "csrfmiddlewaretoken": $('#profile_form input[name=csrfmiddlewaretoken]').val()
-            // },
             cache: false,
             success: function(data){
                 if (data == 'ok'){
@@ -54,8 +27,38 @@ jQuery(document).ready(function ($) {
             }
        });
     });
+
 });
 
+function init() {
+    console.log('table')
+    var productTable = $('#table_of_products').DataTable({
+    "bServerSide": true,
+    "sAjaxSource": 'list_of_products',
+    "bProcessing": true,
+    "bLengthChange": true,
+    // "bSearching": true,
+    "bFilter": true,
+    'sDom': 'rtpli',
+    "bSortable": false,  // change
+    "autoWidth": true,
+    "ordering": false,
+    "bInfo": true,
+    "lengthMenu": [[10, 25, 50, 100], [10, 25, 50, 100]],
+    "iDisplayLength": 10
+    // "aoColumnDefs": [
+    //     {
+    //     "mRender": function (data, type, row) {
+    //         row.status_filter = '<a class="data_number" href="#">' + row[0] + '</a>';
+    //         return row.status_filter;
+    //     },
+    //     "aTargets": [0]
+    //     }
+    // ]
+
+    });
+    productTable.ajax.reload();
+}
 // $(document).ready(function () {
 //     var form = $('#upc_request');
 //     console.log(form);

@@ -1,14 +1,16 @@
 import requests
+import simplejson as json
 
 from django.shortcuts import render
-from django.http import HttpResponseRedirect, HttpRequest
+from django.http import HttpResponseRedirect, HttpResponse, HttpRequest
 from django.contrib.auth.models import User
 from django.views.generic.base import View
 from django.views.generic.edit import FormView
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.core.urlresolvers import reverse
 from django.contrib.auth import login, logout
 
-from .forms import UPC, SubscriberForm
+from .forms import UPC, SubscriberForm, Products
 from .models import *
 
 
@@ -49,7 +51,7 @@ def home(request):
     item = ''
     apikey = ''
     form = UPC(request.POST or None)
-    if request.POST and form.is_valid():
+    if request.method == "POST" and form.is_valid():
         print('YES is_valid')
         data = form.cleaned_data
         print("UPC: ", data['upc'])
@@ -63,29 +65,77 @@ def home(request):
         # r = requests.get('http://api.walmartlabs.com/v1/items',
         #                  params={'apiKey': '5tkgtq74ffgptjd884pmuj8t', 'upc': upc})
         if r.status_code == SUCCESS_RESPONSE:
-            # print(r.json().get('items').pop().get('name'))
-            item = str(r.json().get('items').pop().get('name'))
+            upc = r.json().get('items').pop().get('upc')
+            image_product = r.json().get('items').pop().get('mediumImage')
+            title = r.json().get('items').pop().get('name')
+            brand_name = r.json().get('items').pop().get('brandName')
+            model = r.json().get('items').pop().get('modelNumber')
+            in_stock = r.json().get('items').pop().get('stock')
+            price = r.json().get('items').pop().get('salePrice')
+            free_shipping = r.json().get('items').pop().get('freeShippingOver50Dollars')
+            name = Subscriber.objects.get(name=request.user.get_username())
+            try:
+                Products.objects.update_or_create(owner=name, upc=upc,
+                                                  defaults={
+                                                      'image_product': image_product,
+                                                      'title': title,
+                                                      'brand_name': brand_name,
+                                                      'model': model,
+                                                      'in_stock': in_stock,
+                                                      'price': price,
+                                                      'free_shipping': free_shipping,
+                                                  })
+            except ValueError:
+                print('error!!!')
             global ITEM
-            ITEM = item
+            ITEM = title
         else:
             print('Error! UPC not found')
             item = 'Error! UPC not found'
+
     else:
         print("NO valid")
 
     print("Product name: ", item)
     context = {
-        'item': item,
-    }
-    return render(request, 'home.html', context)
-
-
-def get_context_data(request):
-
-    context = {
         'item': ITEM,
     }
+
     return render(request, 'home.html', context)
+
+
+def user_products_list(request):
+    print('ajax')
+    ajax_response = {'sEcho': '', 'aaData': [], 'iTotalRecords': 0, 'iTotalDisplayRecords': 0}
+    start_pos = int(request.GET['iDisplayStart'])
+    end_pos = start_pos + int(request.GET['iDisplayLength'])
+
+    # --- View contacts of login user ---
+    name = Subscriber.objects.get(name=request.user.get_username())
+    user_products = Products.objects.filter(name=name)
+
+    # --- Views counts ---
+    user_products_count = user_products.count()
+    products = user_products[start_pos:end_pos]
+    ajax_response['iTotalRecords'] = ajax_response['iTotalDisplayRecords'] = user_products_count
+
+    # --- Getting data from base for send to front-end ---
+    for product in products:
+        print('ajax')
+        ajax_response['aaData'].append({
+            'DT_RowId': str(product.id),
+            0: str(product.id),
+            1: str(product.upc),
+            2: str(product.image_product),
+            3: product.title,
+            4: product.brand_name,
+            5: product.in_stock,
+            6: str(product.price),
+            7: str(product.free_shipping),
+            8: product.created.strftime('%m/%d/%y') if product.created else '',
+            })
+    return HttpResponse(json.dumps(ajax_response), content_type='application/json')
+
 
 class RegisterFormView(FormView):
     form_class = UserCreationForm
