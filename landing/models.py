@@ -44,4 +44,4 @@ class Products(models.Model):
         return reverse('products')
 
     def __str__(self):
-        return "UPC:%s title:%s model:%s" % (self.upc, self.title, self.model)
+        return "UPC:%s title:%s brand_name:%s" % (self.upc, self.title, self.brand_name)

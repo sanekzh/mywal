@@ -2,12 +2,12 @@ import requests
 import simplejson as json
 
 from django.shortcuts import render
-from django.http import HttpResponseRedirect, HttpResponse, HttpRequest
+from django.http import HttpResponseRedirect, HttpResponse, Http404, HttpRequest
 from django.contrib.auth.models import User
-from django.views.generic.base import View
+from django.views.generic import View
 from django.views.generic.edit import FormView
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.core.urlresolvers import reverse
+from django.core import serializers
 from django.contrib.auth import login, logout
 
 from .forms import UPC, SubscriberForm, Products
@@ -95,7 +95,6 @@ def home(request):
 
     else:
         print("NO valid")
-
     print("Product name: ", item)
     context = {
         'item': ITEM,
@@ -105,36 +104,13 @@ def home(request):
 
 
 def user_products_list(request):
-    print('ajax')
-    ajax_response = {'sEcho': '', 'aaData': [], 'iTotalRecords': 0, 'iTotalDisplayRecords': 0}
-    start_pos = int(request.GET['iDisplayStart'])
-    end_pos = start_pos + int(request.GET['iDisplayLength'])
-
-    # --- View contacts of login user ---
-    name = Subscriber.objects.get(name=request.user.get_username())
-    user_products = Products.objects.filter(name=name)
-
-    # --- Views counts ---
-    user_products_count = user_products.count()
-    products = user_products[start_pos:end_pos]
-    ajax_response['iTotalRecords'] = ajax_response['iTotalDisplayRecords'] = user_products_count
-
-    # --- Getting data from base for send to front-end ---
-    for product in products:
+    if request.method == 'GET':
         print('ajax')
-        ajax_response['aaData'].append({
-            'DT_RowId': str(product.id),
-            0: str(product.id),
-            1: str(product.upc),
-            2: str(product.image_product),
-            3: product.title,
-            4: product.brand_name,
-            5: product.in_stock,
-            6: str(product.price),
-            7: str(product.free_shipping),
-            8: product.created.strftime('%m/%d/%y') if product.created else '',
-            })
-    return HttpResponse(json.dumps(ajax_response), content_type='application/json')
+        name = Subscriber.objects.get(name=request.user.get_username())
+        queryset = Products.objects.filter(owner=name)
+        json_data = serializers.serialize('json', queryset)
+        print(json_data)
+        return HttpResponse(json_data, content_type='application/json')
 
 
 class RegisterFormView(FormView):
