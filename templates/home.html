@@ -31,30 +31,28 @@
     </form>
 
     <div class="box">
-        <div class="box-header">
-            <div class="box-body">
-                <table id="table_of_products" class="dataTables_wrapper form-inline dt-bootstrap" cellspacing="0" width="100%">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>UPC</th>
-                            <th>Image Product</th>
-                            <th>Title</th>
-                            <th>Brand Name</th>
-                            <th>Model</th>
-                            <th>Price</th>
-{#                            <th>Free Shipping</th>#}
-{#                            <th>Created</th>#}
-{#                            <th>Created</th>#}
-{#                            <th>Created</th>#}
-{#                            <th>Created</th>#}
-{#                            <th>Created</th>#}
-                        </tr>
-                    </thead>
-
-                </table>
-            </div>
+        <div class="box-header"></div>
+        <div class="box-body">
+            <table id="table_of_products" class="table table-hover table-bordered ">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>UPC</th>
+                    <th>Image Product</th>
+                    <th>Title</th>
+                    <th>Brand Name</th>
+                    <th>Model</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>In_stock</th>
+                    <th>Free Shipping</th>
+                    <th>Created</th>
+                    <th>Update</th>
+                </tr>
+                </thead>
+            </table>
         </div>
+        <div class="box-footer"></div>
     </div>
 
     <script src="{% static 'js/jquery-3.2.1.js' %}"></script>

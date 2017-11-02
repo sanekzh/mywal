@@ -1,25 +1,14 @@
 jQuery(document).ready(function ($) {
     $('#table_of_products').DataTable({
-        "processing": true,
+        "processing": false,
         "serverSide": true,
+        "scrollX": true,
         "ajax": {
             "url": '/list_of_products/',
             // "type": "GET"
             'dataSrc': ''
         },
         "columns": [
-             // 'columns': [
-        //     {'data': 'fields.id', 'orderable': false},
-        //     {'data': 'fields.upc', 'orderable': false},
-        //     {'data': 'fields.image_product', 'orderable': true},
-        //     {'data': 'fields.title', 'orderable': false},
-        //     {'data': 'fields.brand_name', 'orderable': false},
-        //     {'data': 'fields.in_stock', 'orderable': false},
-        //     {'data': 'fields.price', 'orderable': true},
-        //     {'data': 'fields.free_shipping', 'orderable': false},
-        //     {'data': 'fields.created', 'orderable': true}
-        // ]
-            // { "data": "id" },
             { "data": "fields.owner"},
             { "data": "fields.upc" },
             { "data": "fields.image_product"},
@@ -27,13 +16,11 @@ jQuery(document).ready(function ($) {
             { "data": "fields.brand_name" },
             { "data": "fields.model"},
             { "data": "fields.price" },
-            // { "data": "fields.quantity" },
-            // { "data": "fields.in_stock" },
-            // { "data": "fields.price" },
-            // { "data": "fields.free_shipping"},
-            // { "data": "fields.is_active" },
-            // { "data": "fields.created" },
-            // { "data": "fields.update" }
+            { "data": "fields.quantity" },
+            { "data": "fields.in_stock" },
+            { "data": "fields.free_shipping"},
+            { "data": "fields.created" },
+            { "data": "fields.update" }
          ],
          'columnDefs': [
             {

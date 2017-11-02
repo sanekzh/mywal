@@ -40,8 +40,5 @@ class Products(models.Model):
         verbose_name = 'product'
         verbose_name_plural = 'products'
 
-    def get_absolute_url(self):
-        return reverse('products')
-
     def __str__(self):
         return "UPC:%s title:%s brand_name:%s" % (self.upc, self.title, self.brand_name)

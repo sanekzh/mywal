@@ -12,5 +12,4 @@ urlpatterns = [
     url(r'^home/$', views.home, name='home'),
     url(r'^user_settings/$', views.user_settings, name='user_settings'),
     url(r'^list_of_products/$', views.user_products_list, name='list_of_products'),
-    # url(r'^list_of_products/$', views.GetProductsListView.as_view(), name='list_of_products'),
 ]
