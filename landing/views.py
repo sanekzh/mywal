@@ -51,7 +51,6 @@ def user_settings(request):
             'email': email,
             'user_apikey': user_apikey
         }
-    print('111111 ', reverse('mywal:register'))
     return render(request, 'user_settings.html', locals())
 
 
