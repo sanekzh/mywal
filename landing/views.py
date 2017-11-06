@@ -1,34 +1,33 @@
 import requests
-import simplejson as json
 
-from django.shortcuts import render
-from django.http import HttpResponseRedirect, HttpResponse, Http404, HttpRequest
-from django.contrib.auth.models import User
+from django.shortcuts import render, redirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.views.generic import View
 from django.views.generic.edit import FormView
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.core import serializers
 from django.contrib.auth import login, logout
+from django.core.urlresolvers import reverse, reverse_lazy
 
 from .forms import UPC, SubscriberForm, Products
 from .models import *
+from .urls import *
 
 
 SUCCESS_RESPONSE = 200
-ITEM = ''
 
 
 def user_settings(request):
     context = []
     session_key = request.session.session_key
-    user_data_settings = Subscriber.objects.filter(name=request.user.get_username())
-    for user_setting in user_data_settings:
-        email = user_setting.email
-        user_apikey = user_setting.user_apikey
-        context = {
-            'email': email,
-            'user_apikey': user_apikey
-        }
+    # user_data_settings = Subscriber.objects.filter(name=request.user.get_username())
+    # for user_setting in user_data_settings:
+    #     email = user_setting.email
+    #     user_apikey = user_setting.user_apikey
+    #     context = {
+    #         'email': email,
+    #         'user_apikey': user_apikey
+    #     }
     form = SubscriberForm(request.POST or None)
     if request.POST and form.is_valid():
         print('YES is_valid')
@@ -40,15 +39,23 @@ def user_settings(request):
         print(data['user_apikey'])
         user_apikey = data['user_apikey']
         Subscriber.objects.update_or_create(name=name, defaults={'email': email, 'user_apikey': user_apikey})
-        user_data_settings = Subscriber.objects.filter(name=request.user.get_username())
+        # user_data_settings = Subscriber.objects.filter(name=request.user.get_username())
     else:
         print("NO valid")
 
+    user_data_settings = Subscriber.objects.filter(name=request.user.get_username())
+    for user_setting in user_data_settings:
+        email = user_setting.email
+        user_apikey = user_setting.user_apikey
+        context = {
+            'email': email,
+            'user_apikey': user_apikey
+        }
+    print('111111 ', reverse('mywal:register'))
     return render(request, 'user_settings.html', locals())
 
 
 def home(request):
-    item = ''
     apikey = ''
     form = UPC(request.POST or None)
     if request.method == "POST" and form.is_valid():
@@ -68,6 +75,7 @@ def home(request):
             upc = r.json().get('items').pop().get('upc')
             image_product = r.json().get('items').pop().get('mediumImage')
             title = r.json().get('items').pop().get('name')
+            print(title)
             brand_name = r.json().get('items').pop().get('brandName')
             model = r.json().get('items').pop().get('modelNumber')
             in_stock = r.json().get('items').pop().get('stock')
@@ -87,20 +95,11 @@ def home(request):
                                                   })
             except ValueError:
                 print('error!!!')
-            global ITEM
-            ITEM = title
         else:
             print('Error! UPC not found')
-            item = 'Error! UPC not found'
-
     else:
         print("NO valid")
-    print("Product name: ", item)
-    context = {
-        'item': ITEM,
-    }
-
-    return render(request, 'home.html', context)
+    return render(request, 'home.html')
 
 
 def user_products_list(request):
@@ -109,13 +108,13 @@ def user_products_list(request):
         name = Subscriber.objects.get(name=request.user.get_username())
         queryset = Products.objects.filter(owner=name)
         json_data = serializers.serialize('json', queryset)
-        print(json_data)
+        # print(json_data)
         return HttpResponse(json_data, content_type='application/json')
 
 
 class RegisterFormView(FormView):
     form_class = UserCreationForm
-    success_url = "/login/"
+    success_url = reverse_lazy('mywal:login')
     template_name = "register.html"
 
     def form_valid(self, form):
@@ -126,7 +125,7 @@ class RegisterFormView(FormView):
 class LoginFormView(FormView):
     form_class = AuthenticationForm
     template_name = "login.html"
-    success_url = "/"
+    success_url = reverse_lazy('mywal:index')
 
     def form_valid(self, form):
         self.user = form.get_user()
@@ -139,4 +138,4 @@ class LogoutView(View):
 
     def get(self, request):
         logout(request)
-        return HttpResponseRedirect("/")
+        return HttpResponseRedirect(reverse('mywal:index'))

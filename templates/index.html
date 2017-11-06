@@ -6,13 +6,13 @@
         {% if user.is_authenticated %}
             <div>
                 <h3 class="form-signin-heading">Hello, {{ user.username }}!
-                    <a class="btn btn-primary btn-lg" href="/home">In Account</a>
+                    <a class="btn btn-primary btn-lg" href="{% url 'mywal:home' %}">In Account</a>
                 </h3>
             </div>
         {% else %}
-            <a href="/login" class="btn btn-lg btn-primary btn-block">Log In</a>
+            <a href="{% url 'mywal:login' %}" class="btn btn-lg btn-primary btn-block">Log In</a>
             <br>
-            <a class="create-account" href="/register">Create an Account?</a>
+            <a class="create-account" href="{% url 'mywal:register' %}">Create an Account?</a>
         {% endif %}
     </div>
 {% endblock %}

@@ -1,5 +1,4 @@
 from django.contrib.auth.models import User
-from django.urls import reverse
 from django.db import models
 
 
@@ -42,3 +41,4 @@ class Products(models.Model):
 
     def __str__(self):
         return "UPC:%s title:%s brand_name:%s" % (self.upc, self.title, self.brand_name)
+

@@ -9,8 +9,8 @@
         <div class="sidebar">
             <ul class="sidebar-menu">
                 <li class="header">{{ user.username }} - MENU</li>
-                <li><a href="{% url 'home' %}"><span>Home</span></a></li>
-                <li><a href="{% url 'user_settings' %}"><span>Settings</span></a></li>
+                <li><a href="{% url 'mywal:home' %}"><span>Home</span></a></li>
+                <li><a href="{% url 'mywal:user_settings' %}"><span>Settings</span></a></li>
             </ul>
         </div>
     </div>
@@ -39,7 +39,7 @@
             </div>
         </div>
         <div>
-            <a class="create-account" href="{% url 'home' %}">Exit</a>
+            <a class="create-account" href="{% url 'mywal:home' %}">Exit</a>
         </div>
 
 {% endblock %}
