@@ -11,7 +11,7 @@
                 <li class="header">{{ user.username }} - MENU</li>
                 <li><a href="{% url 'mywal:home' %}"><span>Home</span></a></li>
                 <li><a href="{% url 'mywal:user_settings' %}"><span>Settings</span></a></li>
-                <li><a href="" id="button_modal_add_product"><span>Add Product</span></a></li>
+                <li><a href="#" id="button_modal_add_product"><span>Add Product</span></a></li>
             </ul>
         </div>
     </div>
@@ -19,50 +19,10 @@
 {% endblock %}
 
 {% block content %}
-      <form id="upc_id" method="post" class="form-inline"> {% csrf_token %}
-        <div class="form-group">
-            <lable class="title">035000521019</lable>
-            <lable class="title">UPC: </lable>
-            <input id="input_upc" name="input_upc" type="text" class="form-control" placeholder="for example: 035000521019" maxlength="64">
-        </div>
-        <div class="form-group">
-            <button id="upload" style="border-color: #00a65a" type="submit" class="btn btn-success">Upload</button>
-        </div>
-    </form>
 
-{#<a href="#"  data-toggle="modal" data-target="#iopen-modal">Open Modal</a>#}
-{##}
-{#            <div class="modal modal-primary">#}
-{#              <div class="modal-dialog">#}
-{#                <div class="modal-content">#}
-{#                  <div class="modal-header">#}
-{#                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>#}
-{#                    <h4 class="modal-title">Modal Primary</h4>#}
-{#                  </div>#}
-{#                  <div class="modal-body">#}
-{#                    <p>One fine body…</p>#}
-{#                  </div>#}
-{#                  <div class="modal-footer">#}
-{#                    <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Close</button>#}
-{#                    <button type="button" class="btn btn-outline">Save changes</button>#}
-{#                  </div>#}
-{#                </div><!-- /.modal-content -->#}
-{#              </div><!-- /.modal-dialog -->#}
-{#            </div><!-- /.modal -->#}
-{##}
-{##}
-{##}
-{#    <div id="modal_add_product" class="modal-add">#}
-{#      <!-- Modal content -->#}
-{#        <div class="modal-content">#}
-{#            <span class="close">&times;</span>#}
-{#            <p>Some text in the Modal..</p>#}
-{#          #}
-{#      </div>#}
-{##}
-{#    </div>#}
+{% include 'upc_request_form.html' %}
 
-
+{# ------ DATATABLE PRODUCTS ------- #}
 
     <div class="box">
         <div class="box-header"></div>

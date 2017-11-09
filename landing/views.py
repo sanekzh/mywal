@@ -1,7 +1,7 @@
 import requests
 
-from django.shortcuts import render, redirect
-from django.http import HttpResponseRedirect, HttpResponse
+from django.shortcuts import render
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.views.generic import View
 from django.views.generic.edit import FormView
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
@@ -11,7 +11,6 @@ from django.core.urlresolvers import reverse, reverse_lazy
 
 from .forms import UPC, SubscriberForm, Products
 from .models import *
-from .urls import *
 
 
 SUCCESS_RESPONSE = 200
@@ -55,33 +54,40 @@ def user_settings(request):
 
 
 def home(request):
+    return render(request, 'home.html')
+
+
+def upc_request(request):
     apikey = ''
+    context = dict()
+    context["description"] = '1234567'
     form = UPC(request.POST or None)
     if request.method == "POST" and form.is_valid():
         print('YES is_valid')
         data = form.cleaned_data
         print("UPC: ", data['upc'])
         upc = data['upc']
-        user_data_settings = Subscriber.objects.filter(name=request.user.get_username())
-        for user_setting in user_data_settings:
-            email = user_setting.email
-            apikey = user_setting.user_apikey
-        r = requests.get('http://api.walmartlabs.com/v1/items',
-                         params={'apiKey': apikey, 'upc': upc})
-        # r = requests.get('http://api.walmartlabs.com/v1/items',
-        #                  params={'apiKey': '5tkgtq74ffgptjd884pmuj8t', 'upc': upc})
-        if r.status_code == SUCCESS_RESPONSE:
-            upc = r.json().get('items').pop().get('upc')
-            image_product = r.json().get('items').pop().get('mediumImage')
-            title = r.json().get('items').pop().get('name')
-            print(title)
-            brand_name = r.json().get('items').pop().get('brandName')
-            model = r.json().get('items').pop().get('modelNumber')
-            in_stock = r.json().get('items').pop().get('stock')
-            price = r.json().get('items').pop().get('salePrice')
-            free_shipping = r.json().get('items').pop().get('freeShippingOver50Dollars')
-            name = Subscriber.objects.get(name=request.user.get_username())
-            try:
+        if upc != '':
+            user_data_settings = Subscriber.objects.filter(name=request.user.get_username())
+            for user_setting in user_data_settings:
+                email = user_setting.email
+                apikey = user_setting.user_apikey
+            r = requests.get('http://api.walmartlabs.com/v1/items',
+                             params={'apiKey': apikey, 'upc': upc})
+            # r = requests.get('http://api.walmartlabs.com/v1/items',
+            #                  params={'apiKey': '5tkgtq74ffgptjd884pmuj8t', 'upc': upc})
+            if r.status_code == SUCCESS_RESPONSE:
+                upc = r.json().get('items').pop().get('upc')
+                image_product = r.json().get('items').pop().get('mediumImage')
+                title = r.json().get('items').pop().get('name')
+                print(title)
+                brand_name = r.json().get('items').pop().get('brandName')
+                model = r.json().get('items').pop().get('modelNumber')
+                in_stock = r.json().get('items').pop().get('stock')
+                price = r.json().get('items').pop().get('salePrice')
+                free_shipping = r.json().get('items').pop().get('freeShippingOver50Dollars')
+                name = Subscriber.objects.get(name=request.user.get_username())
+                # try:
                 Products.objects.update_or_create(owner=name, upc=upc,
                                                   defaults={
                                                       'image_product': image_product,
@@ -92,13 +98,20 @@ def home(request):
                                                       'price': price,
                                                       'free_shipping': free_shipping,
                                                   })
-            except ValueError:
-                print('error!!!')
+                context["description"] = "yes"
+
+            else:
+                print('Error! UPC not found')
+                context["description"] = "no"
+
         else:
-            print('Error! UPC not found')
+            context["description"] = "no"
+
     else:
         print("NO valid")
-    return render(request, 'home.html')
+        context["description"] = "no"
+    print(context)
+    return JsonResponse(context)
 
 
 def user_products_list(request):
