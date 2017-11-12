@@ -14,4 +14,8 @@ urlpatterns = [
     url(r'^user_settings/$', views.user_settings, name='user_settings'),
     url(r'^list_of_products/$', views.user_products_list, name='list_of_products'),
     url(r'^upc_request/$', upc_request, name='upc_request'),
+    url(r'^home/product/(?P<product_id>\w+)/$', delete_product, name='delete_product'),
+    url(r'^export/$', export_in_csv, name='export'),
+    url(r'^import/$', import_from_csv, name='import'),
+
 ]

@@ -12,6 +12,8 @@
                 <li><a href="{% url 'mywal:home' %}"><span>Home</span></a></li>
                 <li><a href="{% url 'mywal:user_settings' %}"><span>Settings</span></a></li>
                 <li><a href="#" id="button_modal_add_product"><span>Add Product</span></a></li>
+                <li><a href="#" id="export_in_csv"><span>Export Product in CSV</span></a></li>
+                <li><a href="#" id="import_from_csv"><span>Import Product from CSV</span></a></li>
             </ul>
         </div>
     </div>
@@ -21,6 +23,8 @@
 {% block content %}
 
 {% include 'upc_request_form.html' %}
+{% include 'export_in_csv.html' %}
+{% include 'import_from_csv.html' %}
 
 {# ------ DATATABLE PRODUCTS ------- #}
 
@@ -41,7 +45,8 @@
                     <th>In_stock</th>
                     <th>Free Shipping</th>
                     <th>Created</th>
-                    <th>Update</th>
+{#                    <th>Update</th>#}
+                    <th>Delete</th>
                 </tr>
                 </thead>
             </table>

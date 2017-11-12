@@ -4,6 +4,18 @@ $(document).ready(function(){
   });
 });
 
+$(document).ready(function(){
+  $("#export_in_csv").click(function() {
+    $("#myModal_export_in_csv").modal('show');
+  });
+});
+
+$(document).ready(function(){
+  $("#import_from_csv").click(function() {
+    $("#myModal_import_from_csv").modal('show');
+  });
+});
+
 function ViewCheck(){
         $('#add_product_ok').removeClass('hidden');
     }
@@ -40,7 +52,8 @@ jQuery(document).ready(function ($) {
             { 'data': 'fields.in_stock' },
             { 'data': 'fields.free_shipping'},
             { 'data': 'fields.created' },
-            { 'data': 'fields.update' }
+            // { 'data': 'fields.update' },
+            { 'data': 'pk' }
          ],
          'columnDefs': [
             {
@@ -88,16 +101,18 @@ jQuery(document).ready(function ($) {
             },
             {
                 'targets': 11,
-                'data': 'fields.free_shipping',
+                'data': 'pk',
                 'render': function (data, type, full, meta) {
-                    var datatime = data.substring(0, 10) + ' ' + data.substring(11, 16);
-                    return '<label style="font-weight: normal">' + datatime + '</label>';
-
+                    var pid = data;
+                    var prod = 'product/';
+                    return '<a href="' + prod + pid + '" id="delete_product_link">' +
+                                '<i class="fa fa-trash-o" aria-hidden="true"></i></a>';
                 }
             }
         ]
         } );
 
+    //************** REQUEST ADD PRODUCT IN TABLE FOR UPC **************
     $('#upc_id').submit(function(event){
         event.preventDefault();
         var form = $('#upc_id');
@@ -127,9 +142,8 @@ jQuery(document).ready(function ($) {
                 }
             },
             error: function(){
-                console.log('error context request');
+                console.log('error ajax request');
             }
        });
     });
 });
-
