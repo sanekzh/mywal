@@ -1,6 +1,5 @@
 import requests
 import csv
-import simplejson as json
 
 from django.shortcuts import render
 from datetime import date
@@ -13,7 +12,6 @@ from django.core import serializers
 from django.contrib.auth import login, logout
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.core.exceptions import ObjectDoesNotExist
-from django.views.decorators.csrf import csrf_exempt
 
 from .forms import UPC, SubscriberForm, Products
 from .models import *
@@ -212,22 +210,6 @@ def import_from_csv(request):
         csv_file = request.FILES['input_file']
         print(csv_file)
         csv_data = open(csv_file, mode='r')
-        count = -1
-
-    #     for row in csv_data:
-    #         count = count + 1
-    #         row = row.split(',')
-    #         if row[0] == 'number':
-    #             continue
-    #
-    #         # Contact.objects.create(session_key=None, first_name=row[1], last_name=row[2], country=row[3],
-    #         #                        town=row[4], phone_nmb=int(row[5]), email=row[6],
-    #         #                        birthday=None, user_id=request.user.id)
-    #
-    #     print('count: ' + str(count))
-    #     return HttpResponse(json.dumps({'count': count}))
-    # else:
-    #     return HttpResponse(json.dumps({'error': 'Something wrong'}))
 
     return request
 
