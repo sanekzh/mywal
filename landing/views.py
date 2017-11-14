@@ -7,7 +7,6 @@ from datetime import date
 from django.core import serializers
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.files.storage import FileSystemStorage
 from django.utils.encoding import smart_str
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.views.generic import View
