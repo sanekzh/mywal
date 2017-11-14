@@ -28,7 +28,9 @@ function ViewError(){
 function ViewError_remove(){
     $('#add_product_error').addClass('hidden');
 }
+
 jQuery(document).ready(function ($) {
+
     $('#table_of_products').DataTable({
         'processing': false,
         'serverSide': true,
@@ -146,4 +148,35 @@ jQuery(document).ready(function ($) {
             }
        });
     });
+
+
+    $("#import_csv").on("submit", function (event) {
+        event.preventDefault();
+
+        var data = new FormData($('#import_csv').get(0));
+        console.log(data);
+        $.ajax({
+            url: $(this).attr('action'),
+            type: $(this).attr('method'),
+            data: data,
+            cache: false,
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+            success: function (data) {
+                $('#dismiss_modal_import').click();
+                alert('Load is ' + data['load_status']);
+                setTimeout(function() {location.reload(true);}, 500);
+                console.log(data);
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    });
 });
+
+
+
+
+

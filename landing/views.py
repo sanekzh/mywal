@@ -1,17 +1,21 @@
 import requests
 import csv
+import simplejson as json
 
 from django.shortcuts import render
 from datetime import date
+from django.core import serializers
+from django.core.urlresolvers import reverse, reverse_lazy
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.files.storage import FileSystemStorage
 from django.utils.encoding import smart_str
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.views.generic import View
 from django.views.generic.edit import FormView
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.core import serializers
 from django.contrib.auth import login, logout
-from django.core.urlresolvers import reverse, reverse_lazy
-from django.core.exceptions import ObjectDoesNotExist
+from django.conf import settings
+
 
 from .forms import UPC, SubscriberForm, Products
 from .models import *
@@ -93,7 +97,6 @@ def user_settings(request):
 def upc_request(request):
     apikey = ''
     context = dict()
-    context["description"] = '1234567'
     form = UPC(request.POST or None)
     if request.method == "POST" and form.is_valid():
         print('YES is_valid')
@@ -113,7 +116,6 @@ def upc_request(request):
                 upc = r.json().get('items').pop().get('upc')
                 image_product = r.json().get('items').pop().get('mediumImage')
                 title = r.json().get('items').pop().get('name')
-                print(title)
                 brand_name = r.json().get('items').pop().get('brandName')
                 model = r.json().get('items').pop().get('modelNumber')
                 in_stock = r.json().get('items').pop().get('stock')
@@ -207,9 +209,49 @@ def export_in_csv(request):
 def import_from_csv(request):
     if request.method == 'POST':
 
-        csv_file = request.FILES['input_file']
-        print(csv_file)
-        csv_data = open(csv_file, mode='r')
+        csv_file = request.FILES['import_file']
+        csv_pathfile = settings.DOWNLOADABLE_FILES + '/' + str(csv_file)
+        csv_data = open(csv_pathfile, mode='r')
 
-    return request
+        for row in csv_data:
+            row = row.split(',')
+            if row[0].rstrip() != 'UPC':
+                print(row[0].rstrip())
+                upc = row[0].rstrip()
+
+                user_data_settings = Subscriber.objects.filter(name=request.user.get_username())
+                for user_setting in user_data_settings:
+                    email = user_setting.email
+                    apikey = user_setting.user_apikey
+                r = requests.get('http://api.walmartlabs.com/v1/items',
+                                 params={'apiKey': apikey, 'upc': upc})
+                # r = requests.get('http://api.walmartlabs.com/v1/items',
+                #                  params={'apiKey': '5tkgtq74ffgptjd884pmuj8t', 'upc': upc})
+                if r.status_code == SUCCESS_RESPONSE:
+                    upc = r.json().get('items').pop().get('upc')
+                    image_product = r.json().get('items').pop().get('mediumImage')
+                    title = r.json().get('items').pop().get('name')
+                    brand_name = r.json().get('items').pop().get('brandName')
+                    model = r.json().get('items').pop().get('modelNumber')
+                    in_stock = r.json().get('items').pop().get('stock')
+                    price = r.json().get('items').pop().get('salePrice')
+                    free_shipping = r.json().get('items').pop().get('freeShippingOver50Dollars')
+                    name = Subscriber.objects.get(name=request.user.get_username())
+                    print(name)
+
+                    Products.objects.update_or_create(owner=name, upc=upc,
+                                                      defaults={
+                                                          'image_product': image_product,
+                                                          'title': title,
+                                                          'brand_name': brand_name,
+                                                          'model': model,
+                                                          'in_stock': in_stock,
+                                                          'price': price,
+                                                          'free_shipping': free_shipping,
+                                                      })
+                else:
+                    print('Error! UPC not found')
+        return HttpResponse(json.dumps({'load_status': 'Ready!'}))
+    else:
+        return HttpResponse(json.dumps({'error': 'Something wrong'}))
 
