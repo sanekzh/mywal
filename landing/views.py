@@ -5,8 +5,8 @@ import simplejson as json
 from django.shortcuts import render
 from datetime import date
 from django.core import serializers
-from django.core.urlresolvers import reverse, reverse_lazy
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.utils.encoding import smart_str
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.views.generic import View
@@ -56,17 +56,10 @@ def home(request):
     return render(request, 'home.html')
 
 
+# UPDATE OR CREATE USER SETTINGS
+
 def user_settings(request):
-    context = []
-    session_key = request.session.session_key
-    # user_data_settings = Subscriber.objects.filter(name=request.user.get_username())
-    # for user_setting in user_data_settings:
-    #     email = user_setting.email
-    #     user_apikey = user_setting.user_apikey
-    #     context = {
-    #         'email': email,
-    #         'user_apikey': user_apikey
-    #     }
+    context = dict()
     form = SubscriberForm(request.POST or None)
     if request.POST and form.is_valid():
         print('YES is_valid')
@@ -77,21 +70,29 @@ def user_settings(request):
         email = data['email']
         print(data['user_apikey'])
         user_apikey = data['user_apikey']
-        Subscriber.objects.update_or_create(name=name, defaults={'email': email, 'user_apikey': user_apikey})
-        # user_data_settings = Subscriber.objects.filter(name=request.user.get_username())
+        try:
+            Subscriber.objects.update_or_create(name=name, defaults={'email': email, 'user_apikey': user_apikey})
+        except ObjectDoesNotExist:
+            context["description"] = "Object does not exist"
     else:
         print("NO valid")
+    try:
+        user_data_settings = Subscriber.objects.filter(name=request.user.get_username())
+        for user_setting in user_data_settings:
+            email = user_setting.email
+            user_apikey = user_setting.user_apikey
+            context = {
+                'email': email,
+                'user_apikey': user_apikey
+            }
+            print(context['email'])
+            print(context['user_apikey'])
+    except ObjectDoesNotExist:
+        context["description"] = "Object does not exist"
+    return render(request, 'user_settings.html', context)
 
-    user_data_settings = Subscriber.objects.filter(name=request.user.get_username())
-    for user_setting in user_data_settings:
-        email = user_setting.email
-        user_apikey = user_setting.user_apikey
-        context = {
-            'email': email,
-            'user_apikey': user_apikey
-        }
-    return render(request, 'user_settings.html', locals())
 
+# FUNCTION ADD PRODUCT IN DATABASE FROM WALMART
 
 def upc_request(request):
     apikey = ''
@@ -148,25 +149,39 @@ def upc_request(request):
     return JsonResponse(context)
 
 
-def user_products_list(request):
-    if request.method == 'GET':
-        print('start ajax request')
-        name = Subscriber.objects.get(name=request.user.get_username())
-        queryset = Products.objects.filter(owner=name)
-        json_data = serializers.serialize('json', queryset)
-        return HttpResponse(json_data, content_type='application/json')
+# PRINT PRODUCTS FROM DATABASE IN DATATABLE
 
+def user_products_list(request):
+    context = dict()
+    apikey = ''
+    user_data_settings = Subscriber.objects.filter(name=request.user.get_username())
+    for user_setting in user_data_settings:
+        apikey = user_setting.user_apikey
+    print('apikey for ajax ', apikey)
+    if apikey != '':
+        print('apikey for ajax ', apikey)
+        if request.method == 'GET':
+            print('start ajax request')
+            name = Subscriber.objects.get(name=request.user.get_username())
+            queryset = Products.objects.filter(owner=name)
+            json_data = serializers.serialize('json', queryset)
+            return HttpResponse(json_data, content_type='application/json')
+    else:
+        print('apikey in empty')
+        context["description"] = 'apikey in empty'
+        return JsonResponse(context)
+
+
+# DELETE PRODUCT FROM DATABASE AND DATATABLE
 
 def delete_product(request, product_id):
-    try:
-        queryset = Products.objects.filter(id=product_id).delete()
-        print(queryset)
-        print("pk = ", product_id)
-    except ObjectDoesNotExist:
-        print("Object Does Not Exist")
-
+    queryset = Products.objects.filter(id=product_id).delete()
+    print(queryset)
+    print("pk = ", product_id)
     return HttpResponseRedirect(reverse('mywal:home'))
 
+
+# EXPORT PRODUCTS IN CSV-file
 
 def export_in_csv(request):
     name = Subscriber.objects.get(name=request.user.get_username())
@@ -204,6 +219,8 @@ def export_in_csv(request):
         ])
     return response
 
+
+# IMPORT PRODUCTS FROM CSV-file
 
 def import_from_csv(request):
     if request.method == 'POST':

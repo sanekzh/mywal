@@ -1,21 +1,24 @@
+//************** show modal window add product *******************************
 $(document).ready(function(){
   $("#button_modal_add_product").click(function() {
     $("#myModal").modal('show');
   });
 });
-
+//************** show modal window export in csv-file ************************
 $(document).ready(function(){
   $("#export_in_csv").click(function() {
     $("#myModal_export_in_csv").modal('show');
   });
 });
-
+//************** show modal window import upc from csv-file ******************
 $(document).ready(function(){
   $("#import_from_csv").click(function() {
     $("#myModal_import_from_csv").modal('show');
   });
 });
 
+
+//************** functions for displaying the correct upc query **************
 function ViewCheck(){
         $('#add_product_ok').removeClass('hidden');
     }
@@ -23,14 +26,15 @@ function ViewCheck_remove(){
         $('#add_product_ok').addClass('hidden');
     }
 function ViewError(){
-    $('#add_product_error').removeClass('hidden');
-}
+        $('#add_product_error').removeClass('hidden');
+    }
 function ViewError_remove(){
-    $('#add_product_error').addClass('hidden');
-}
+        $('#add_product_error').addClass('hidden');
+    }
+//*****************************************************************************
+
 
 jQuery(document).ready(function ($) {
-
     $('#table_of_products').DataTable({
         'processing': false,
         'serverSide': true,
@@ -57,7 +61,7 @@ jQuery(document).ready(function ($) {
             // { 'data': 'fields.update' },
             { 'data': 'pk' }
          ],
-         'columnDefs': [
+        'columnDefs': [
             {
                 'targets': 2,
                 'data': 'fields.image_product',
@@ -114,7 +118,7 @@ jQuery(document).ready(function ($) {
         ]
         } );
 
-    //************** REQUEST ADD PRODUCT IN TABLE FOR UPC **************
+    //************** request add product in table for upc **************
     $('#upc_id').submit(function(event){
         event.preventDefault();
         var form = $('#upc_id');
@@ -149,7 +153,7 @@ jQuery(document).ready(function ($) {
        });
     });
 
-
+    //************** request import product list from csv-file **************
     $("#import_csv").on("submit", function (event) {
         event.preventDefault();
 

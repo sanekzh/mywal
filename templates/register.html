@@ -2,8 +2,10 @@
 {% load static %}
 
 {% block content %}
+
+     <!-- ***************** FORM REGISTRATION ***************** -->
+
     <form class="form-signin" action="" method="post"> {% csrf_token %}
-{#        {{ form.as_p }}#}
          <div class="input-lable">
             <h3 class="form-signin-heading">Create New Account</h3>
         </div>
@@ -15,4 +17,5 @@
         </div>
         <a class="create-account" href="{% url 'mywal:index' %}">Exit</a>
     </form>
+
 {% endblock %}

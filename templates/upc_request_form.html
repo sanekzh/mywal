@@ -1,25 +1,20 @@
-<!-- *******  HTML-код модального окна для добаления продукта в БД ******* -->
+<!-- *******  HTML code for the modal window for adding a product to the database ******* -->
 <div id="myModal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
-        <!-- Заголовок модального окна -->
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 <h4 class="modal-title">Add product</h4>
             </div>
-            <!-- Основное содержимое модального окна -->
             <div class="modal-body">
                 <form id="upc_id" action="{% url 'mywal:upc_request' %}" method="post" class="form-inline"> {% csrf_token %}
                     <div class="form-group">
-{#                        <lable class="title">035000521019</lable>#}
                         <lable class="title">Input UPC: </lable>
                         <input id="input_upc" name="input_upc" type="text" class="form-control" placeholder="for example: 035000521019" maxlength="64">
                         <span id="add_product_ok" style="color: #4cae4c" class="glyphicon glyphicon-ok hidden" aria-hidden="true"></span>
                         <span id="add_product_error" style="color: red" class="glyphicon glyphicon-remove hidden" aria-hidden="true"></span>
                     </div>
-                <!-- Футер модального окна -->
                     <div class="modal-footer">
-{#                            <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>#}
                         <button id="upload" type="submit" class="btn btn-primary">Upload product</button>
                     </div>
                 </form>

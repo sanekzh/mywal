@@ -2,6 +2,8 @@
 {% load static %}
 
 {% block content %}
+
+     <!-- ***************** WELCOME FORM ***************** -->
     <div class="form-signin">
         {% if user.is_authenticated %}
             <div>
@@ -15,4 +17,5 @@
             <a class="create-account" href="{% url 'mywal:register' %}">Create an Account?</a>
         {% endif %}
     </div>
+
 {% endblock %}

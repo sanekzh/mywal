@@ -19,6 +19,7 @@
 
 {% block content %}
 
+     <!-- ***************** User settings template ***************** -->
         <div class="input-lable">
             <h3 class="form-signin-heading">Your Settings</h3>
         </div>
@@ -28,9 +29,9 @@
                     <div class="col-lg-3">
                         <div class="form-group">
                             <form action="" method="post" > {% csrf_token %}
-                                <input class="form-control" style="margin-bottom: 5px" placeholder="Username" value="{{ user.username }}" type="text" name="{{ form.name.name }}" readonly />
-                                <input class="form-control" style="margin-bottom: 5px" placeholder="Email" value="{{ email }}" type="email" name="{{ form.email.name }}" />
-                                <input class="form-control" style="margin-bottom: 5px" placeholder="API-key" value="{{ user_apikey }}" type="text" name="{{ form.user_apikey.name }}" />
+                                <input class="form-control" style="margin-bottom: 5px" placeholder="Username" value="{{ user.username }}" type="text" name="name" readonly />
+                                <input class="form-control" style="margin-bottom: 5px" placeholder="Email" value="{{ email }}" type="email" name="email"/>
+                                <input class="form-control" style="margin-bottom: 5px" placeholder="API-key" value="{{ user_apikey }}" type="text" name="user_apikey"/>
                                 <button type="submit" class="btn btn-primary btn-sm">Save settings</button>
                             </form>
                         </div>
