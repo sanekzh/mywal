@@ -122,7 +122,6 @@ def upc_request(request):
                 price = r.json().get('items').pop().get('salePrice')
                 free_shipping = r.json().get('items').pop().get('freeShippingOver50Dollars')
                 name = Subscriber.objects.get(name=request.user.get_username())
-                # try:
                 Products.objects.update_or_create(owner=name, upc=upc,
                                                   defaults={
                                                       'image_product': image_product,
