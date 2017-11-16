@@ -15,7 +15,6 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout
 from django.conf import settings
 
-
 from .forms import UPC, SubscriberForm, Products
 from .models import *
 
@@ -106,7 +105,6 @@ def upc_request(request):
         if upc != '':
             user_data_settings = Subscriber.objects.filter(name=request.user.get_username())
             for user_setting in user_data_settings:
-                email = user_setting.email
                 apikey = user_setting.user_apikey
             r = requests.get('http://api.walmartlabs.com/v1/items',
                              params={'apiKey': apikey, 'upc': upc})
@@ -222,6 +220,7 @@ def export_in_csv(request):
 # IMPORT PRODUCTS FROM CSV-file
 
 def import_from_csv(request):
+    apikey = ''
     if request.method == 'POST':
 
         csv_file = request.FILES['import_file']
@@ -233,10 +232,8 @@ def import_from_csv(request):
             if row[0].rstrip() != 'UPC':
                 print(row[0].rstrip())
                 upc = row[0].rstrip()
-
                 user_data_settings = Subscriber.objects.filter(name=request.user.get_username())
                 for user_setting in user_data_settings:
-                    email = user_setting.email
                     apikey = user_setting.user_apikey
                 r = requests.get('http://api.walmartlabs.com/v1/items',
                                  params={'apiKey': apikey, 'upc': upc})
