@@ -11,6 +11,23 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+from celery.schedules import crontab
+
+
+# Celery settings
+BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Europe/Kiev'
+
+CELERYBEAT_SCHEDULE = {
+    'auto_update_every_hour': {
+        'task': 'landing.tasks.auto_update_all_products',
+        'schedule': crontab(minute='*/1'),
+    },
+}
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -23,7 +40,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 's$*)40inpx07q7=2$-kp5(jn%-ro6dyyt7(1grx87m3ezrtvs='
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -88,15 +105,6 @@ WSGI_APPLICATION = 'mywal.wsgi.application'
 #     }
 # }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'mywal_db',
-        'USER': 'mywal',
-        'PASSWORD': 'Qazxsw789456',
-        'HOST': '127.0.0.1',
-    }
-}
 
 
 # Password validation
@@ -131,7 +139,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
@@ -142,3 +149,7 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
 )
 
+try:
+  from mywal.local_settings import *
+except ImportError:
+  pass

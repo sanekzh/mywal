@@ -5,7 +5,6 @@ import simplejson as json
 from django.shortcuts import render
 from datetime import date
 from django.core import serializers
-from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.utils.encoding import smart_str
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
@@ -39,7 +38,6 @@ class LoginFormView(FormView):
 
     def form_valid(self, form):
         self.user = form.get_user()
-        print(self.user)
         login(self.request, self.user)
         return super(LoginFormView, self).form_valid(form)
 
@@ -63,31 +61,20 @@ def user_settings(request):
     if request.POST and form.is_valid():
         print('YES is_valid')
         data = form.cleaned_data
-        print(data['name'])
         name = data['name']
-        print(data['email'])
         email = data['email']
-        print(data['user_apikey'])
         user_apikey = data['user_apikey']
-        try:
-            Subscriber.objects.update_or_create(name=name, defaults={'email': email, 'user_apikey': user_apikey})
-        except ObjectDoesNotExist:
-            context["description"] = "Object does not exist"
+        Subscriber.objects.update_or_create(name=name, defaults={'email': email, 'user_apikey': user_apikey})
     else:
         print("NO valid")
-    try:
-        user_data_settings = Subscriber.objects.filter(name=request.user.get_username())
-        for user_setting in user_data_settings:
-            email = user_setting.email
-            user_apikey = user_setting.user_apikey
-            context = {
-                'email': email,
-                'user_apikey': user_apikey
-            }
-            print(context['email'])
-            print(context['user_apikey'])
-    except ObjectDoesNotExist:
-        context["description"] = "Object does not exist"
+    user_data_settings = Subscriber.objects.filter(name=request.user.get_username())
+    for user_setting in user_data_settings:
+        email = user_setting.email
+        user_apikey = user_setting.user_apikey
+        context = {
+            'email': email,
+            'user_apikey': user_apikey
+        }
     return render(request, 'user_settings.html', context)
 
 
@@ -100,7 +87,6 @@ def upc_request(request):
     if request.method == "POST" and form.is_valid():
         print('YES is_valid')
         data = form.cleaned_data
-        print("UPC: ", data['upc'])
         upc = data['upc']
         if upc != '':
             user_data_settings = Subscriber.objects.filter(name=request.user.get_username())
@@ -142,7 +128,6 @@ def upc_request(request):
     else:
         print("NO valid")
         context["description"] = "no"
-    print(context)
     return JsonResponse(context)
 
 
@@ -154,17 +139,21 @@ def user_products_list(request):
     user_data_settings = Subscriber.objects.filter(name=request.user.get_username())
     for user_setting in user_data_settings:
         apikey = user_setting.user_apikey
-    print('apikey for ajax ', apikey)
     if apikey != '':
-        print('apikey for ajax ', apikey)
         if request.method == 'GET':
-            print('start ajax request')
+            data = request.GET
+            sort_by = ''.join(data.getlist('sort_by'))
             name = Subscriber.objects.get(name=request.user.get_username())
-            queryset = Products.objects.filter(owner=name)
+            print('sort_by = ', sort_by)
+            if sort_by == 'lowtohigh':
+                print('bingo!!!')
+                queryset = Products.objects.filter(owner=name).order_by('-price').reverse()
+            else:
+                print('bingo!!!!!!!!!!!!!!')
+                queryset = Products.objects.filter(owner=name).order_by('-price')
             json_data = serializers.serialize('json', queryset)
             return HttpResponse(json_data, content_type='application/json')
     else:
-        print('apikey in empty')
         context["description"] = 'apikey in empty'
         return JsonResponse(context)
 
@@ -173,8 +162,6 @@ def user_products_list(request):
 
 def delete_product(request, product_id):
     queryset = Products.objects.filter(id=product_id).delete()
-    print(queryset)
-    print("pk = ", product_id)
     return HttpResponseRedirect(reverse('mywal:home'))
 
 
@@ -230,7 +217,6 @@ def import_from_csv(request):
         for row in csv_data:
             row = row.split(',')
             if row[0].rstrip() != 'UPC':
-                print(row[0].rstrip())
                 upc = row[0].rstrip()
                 user_data_settings = Subscriber.objects.filter(name=request.user.get_username())
                 for user_setting in user_data_settings:
@@ -249,8 +235,6 @@ def import_from_csv(request):
                     price = r.json().get('items').pop().get('salePrice')
                     free_shipping = r.json().get('items').pop().get('freeShippingOver50Dollars')
                     name = Subscriber.objects.get(name=request.user.get_username())
-                    print(name)
-
                     Products.objects.update_or_create(owner=name, upc=upc,
                                                       defaults={
                                                           'image_product': image_product,
