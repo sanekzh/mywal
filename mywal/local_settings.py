@@ -1,7 +1,7 @@
 
 
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
+DEBUG = False
+TEMPLATE_DEBUG = False
 
 DATABASES = {
     'default': {
