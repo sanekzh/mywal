@@ -25,7 +25,7 @@ CELERY_TIMEZONE = 'Europe/Kiev'
 CELERYBEAT_SCHEDULE = {
     'auto_update_every_hour': {
         'task': 'landing.tasks.auto_update_all_products',
-        'schedule': crontab(minute='*/1'),
+        'schedule': crontab(minute='*/30'),
     },
 }
 
